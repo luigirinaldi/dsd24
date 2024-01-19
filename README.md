@@ -18,3 +18,10 @@ Using the Compilation Report and looking into the fitter section, we see the fol
 - Total DSP Blocks: 0 out of 87 (0%)
 - Total PLLs: 0 out of 6 (0%)
 
+## Task 2
+
+To begin, we copy the program from the spec pdf. The code to divide by 1024 is simplified by casting the float to an int, then shifting right 10.
+
+When trying to add the `gcvt` to calcuate the delay, the script tell us that the program no longer fits on the onchip mem and is overflowing by 20k+.
+
+When running the tests, we get results for the first test case but not for the other two, so it would seem that there is not enough memory to run the `generateVector` function which commits the vector to memory.
