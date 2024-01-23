@@ -70,3 +70,13 @@ PLLJ_PLLSPE_INFO.txt
 
 */.qsys_edit
 .vscode
+
+**/*.force_relink
+
+**/*.o
+**/*.elf
+
+**/**bsp/*
+!**/**bsp/settings.bsp
+
+hello_world/first_nios2_system/
