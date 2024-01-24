@@ -53,7 +53,7 @@
 *.txt # Explicitly add any text files used
 *~
 *example*
-*sopc_*
+*sopc*
 # *.sdc # I want those timing files
 
 # ignore Quartus II generated folders
@@ -73,10 +73,15 @@ PLLJ_PLLSPE_INFO.txt
 
 **/*.force_relink
 
+# nios
+
+**/*.map
+
 **/*.o
 **/*.elf
 
 **/**bsp/*
 !**/**bsp/settings.bsp
 
-hello_world/first_nios2_system/
+hello_world/first_nios2_system/**
+
