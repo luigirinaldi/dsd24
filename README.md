@@ -43,3 +43,16 @@ To begin, we copy the program from the spec pdf. The code to divide by 1024 is s
 - Comparing with a Python implementation, we see a small difference the integer part of our calculated value. We put this down to innacuracies of single precision float. By changing all the floats to double, we are able to get exactly the same result as the Python script.
 - We would expect that reducing the `onchipMem` would not effect the speed of the computation. Reducing the size to 200kB instead of 390kB, we get an execution time of 0.85ms for test 1 and 35ms for test 2. These numbers are essentially the same and so we seem to be able to validate our hypothesis that the memory size has little to no bearing on the latency.
 - The little difference seen on test 2 (1ms) could be attributed to ...
+
+### Compiler Flags
+
+Tested on 128 iterations
+
+Flag | Test 1 | Test 2 | size
+--- | --- | --- | ---
+-O0 | 108 | 4288 | 13872
+-O1 | 5 (for 2^16) | 27 | 13632
+-O2 | 85 | 3320 | 13760
+-O3 | 85 | 3327 | 13748
+-Ofast | 85 | 3345 | 13748
+-Os | 0 | 0 |13748
