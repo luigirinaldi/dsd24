@@ -210,6 +210,14 @@ objdump of -O2 optimisation for 1 iteration
   800468:	0800f600 	call	800f60 <printf>
 ```
 
+Upon extensive examination two behaviours were identified as unusual: the two iteration timing having an average time that was half that of the single iteration timing and the fact that the latency of the computation was being affected by instructions outside of the timing body.
+
+- The first behaviour is actually intended and is related to the fact that the result of the computations happening inside of the timing body are not used except for the last value, which is printed to the terminal. The compiler therefore is able to optimise this behaviour and skips the first computation in the case of a two iteration timing loop, meaning the final assembly looks exactly identical to that of the same code for a single iteration, however the reported average time is halfed.
+  - This behaviour can be amended by decorating the result variable as `volatile` hence forcing the compiler to evaluate all iterations of the timing loops.
+- The second behaviour was a bit more elusive, as it seemed like instructions outside of the timing body were affecting the time taken to perform the `sumVector` computation. In particular the `printf` statement responsible for computing the average latency and printing it to the UART channel was the main culprit. It was observed that when a single iteration was being performed the measured latency was lower than other cases, and when the number of computations performed was a power of 2 the time was also lower that other cases. This seems to suggest that the division (or fixed constant multiplicatino) performed to retrieve the average time was somehow impacting the average latency of the previous operations. It would make sense for this behaviour to disappear when averaging over more iterations of the `sumVector` operation, however it was interesting to observe that for the cases of 2,4 and 8 iterations of the timing loop the measured latency was always ~4323 ms and for 3,5,6 and 7 it was always ~7138 ms. 
+  - To amend this behaviour the division operation was removed and the only value printed to the terminal was the total number of ticks taken to perform the entire timing loop. 
+    While this solution leaves the possibility of the `printf` statement affecting the timing open, that is an instruction which is necessary to be able to measure the performance of the code and it can be assumed that even if it were affecting the `sumVector` timing it would be constant and uniform across the different optimisation settings and cache configurations.
+
 
 | Resources | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | total     |
 | --------- | ---------- | ---------- | ---------- | ---------- | ---------- | --------- |
