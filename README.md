@@ -48,14 +48,14 @@ To begin, we copy the program from the spec pdf. The code to divide by 1024 is s
 
 Tested on 128 iterations
 
-Flag | Test 1 | Test 2 | size
---- | --- | --- | ---
--O0 | 108 | 4288 | 13872
--O1 | 5 (for 2^16) | 27 | 13632
--O2 | 85 | 3320 | 13760
--O3 | 85 | 3327 | 13748
--Ofast | 85 | 3345 | 13748
--Os | 0 | 0 |13748
+| Flag   | Test 1       | Test 2 | size  |
+| ------ | ------------ | ------ | ----- |
+| -O0    | 108          | 4288   | 13872 |
+| -O1    | 5 (for 2^16) | 27     | 13632 |
+| -O2    | 85           | 3320   | 13760 |
+| -O3    | 85           | 3327   | 13748 |
+| -Ofast | 85           | 3345   | 13748 |
+| -Os    | 0            | 0      | 13748 |
 
 
 ## Task 3
@@ -78,14 +78,14 @@ Chaning the program to use doubles reduces the error to 0 as the simulation also
 
 -Os breaks the timing function (we think) and it seems like the performance is equivalent to the -O1 optimisation.
 
-Flag   | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | size of elf
----    | ---        | ---        | ---        |  ---       | ---        | --- 
--O0    | 5704 | 5679.25 | 5666.5 | 4179 | 3920 | 76196 b
--O1    | 1115.75 | 1100.75 | 1109.25 | 925  | 917.5 | 75912 b 
--O2    | 1919 (3810 for 4 iterations) 4286 for 1 iteration | 3784.5 | 3778.75 | 3664 | 3648.75 | 76068 b 
--O3    | 1922 | 3810 | 3805 | 3685 | 3669 | 76036 b
--Ofast | 1920 | 3801 | 3795.5 | 3677 | 3662 | 76036 b
--Os    | 0    | 0 | 0 | 0 (lol) | 0 | 75916 b
+| Flag   | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | size of elf |
+| ------ | ---------- | ---------- | ---------- | ---------- | ---------- | ----------- |
+| -O0    | 6033       | 6015       | 6006       | 3924       | 3914       | 76484 b     |
+| -O1    | 4745       | 4697       | 4691       | 3646       | 3627       | 76236 b     |
+| -O2    | 4736       | 4727       | 4722       | 3644       | 3639       | 76400 b     |
+| -O3    | 4739       | 4723       | 4726       | 3644       | 3640       | 76368 b     |
+| -Ofast | 4709       | 4733       | 4728       | 3644       | 3641       | 76368 b     |
+| -Os    | 5066       | 5049       | 5041       | 3679       | 3674       | 76240 b     |
 
 #### Nonsensical rambling
 For -O2, O3 and Ofast optimisation settings it seems like the numbers of iterations performed to average the timing of the function affects the performance. 
@@ -211,8 +211,8 @@ objdump of -O2 optimisation for 1 iteration
 ```
 
 
-Resources | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | total
----       | ---        | ---        | ---        |  ---       | ---        | --- 
-LE        | 47,360     |  64640     |  99072     |  65024     | 100224     | 4,065,280
-EM        | 0          |  0         |  0         | 0          |  0         | 87
-MB        | 1,628      |  1640      |  1638      |  1639      |  1646      | 32,070
+| Resources | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | total     |
+| --------- | ---------- | ---------- | ---------- | ---------- | ---------- | --------- |
+| LE        | 47,360     | 64640      | 99072      | 65024      | 100224     | 4,065,280 |
+| EM        | 0          | 0          | 0          | 0          | 0          | 87        |
+| MB        | 1,628      | 1640       | 1638       | 1639       | 1646       | 32,070    |
