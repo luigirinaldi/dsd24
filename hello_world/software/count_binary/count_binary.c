@@ -17,15 +17,17 @@
 // #define N 2041
 
 // Test case 3
-#define step 1/1024.0
-#define N 261121
+// #define step 1/1024.0
+// #define N 261121
 
 // Test case 4
-// #define N 2323
+#define N 2323
 #define RANDSEED 334
-#define MAXVAL 0 // no value supplied
+#define MAXVAL 255
 
-void generateRandomVector(float x[N])
+#ifdef RANDSEED
+
+void generateVector(float x[N])
 {
   int i;
   srand(RANDSEED);
@@ -35,6 +37,8 @@ void generateRandomVector(float x[N])
   }
 }
 
+#else
+
 // Generates the vector x and stores it in the memory
 void generateVector(float x[N])
 {
@@ -42,6 +46,8 @@ void generateVector(float x[N])
   x[0] = 0;
   for (i = 1; i < N; i++) x[i] = x[i-1] + step;
 }
+
+#endif
 
 float sumVector(float x[0], int M)
 {
@@ -68,7 +74,7 @@ float theFunction(float x[0], int M) {
 
 int main(int argc, char* argv[])
 {
-  const int numIterations = 2;
+  const int numIterations = 10;
   printf("Task 3!\n");
   printf("Ticks per second: %ld\n", alt_ticks_per_second());
   printf("Running %d tests\n", numIterations);
