@@ -224,3 +224,13 @@ Upon extensive examination two behaviours were identified as unusual: the two it
 | LE        | 47,360     | 64640      | 99072      | 65024      | 100224     | 4,065,280 |
 | EM        | 0          | 0          | 0          | 0          | 0          | 87        |
 | MB        | 1,628      | 1640       | 1638       | 1639       | 1646       | 32,070    |
+
+## Task 4
+
+We used instuction and data cache sizes of 2 KB and used compiler optimisation `O0` for this task.
+
+| Test Number | Program Size | Time (ms) | Result                    | Python `float`            | Python `double`     | Error (wrt `double`) | Relative Error |
+| ----------- | ------------ | --------- | ------------------------- | ------------------------- | ------------------- | -------------------- | -------------- |
+| 1           | 87312        | 34        | `0x4960b5d8` (920413.5)   | `0x4960b6da` (920413.6)   | (920413.6266494419) |                      |                |
+| 2           | 87332        | 1360      | `0x4c09cc78` (36124104)   | `0x4c09cc73` (36123084)   | (36123085.55197907) |                      |                |
+| 3           | 87548        | 183334    | `0x4f89bb7c` (4621531136) | `0x4f89bb2a` (4621489000) | (4621489017.888633) |                      |                |

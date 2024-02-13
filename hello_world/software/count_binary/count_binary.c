@@ -6,6 +6,7 @@
 #include <system.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <math.h>
 
 // Test case 1
 // #define step 5
@@ -18,7 +19,21 @@
 // Test case 3
 #define step 1/1024.0
 #define N 261121
-// #define N 40000
+
+// Test case 4
+// #define N 2323
+#define RANDSEED 334
+#define MAXVAL 0 // no value supplied
+
+void generateRandomVector(float x[N])
+{
+  int i;
+  srand(RANDSEED);
+  for (i = 0; i < N; i++)
+  {
+    x[i] = ((float) rand() / (float) RAND_MAX) * MAXVAL;
+  }
+}
 
 // Generates the vector x and stores it in the memory
 void generateVector(float x[N])
@@ -34,16 +49,26 @@ float sumVector(float x[0], int M)
   int i = 0;
   for (; i < M; i++) 
   {
-    // if (i % 1000 == 0) printf("%d %d\n", (int)sum, i);
     sum += (x[i] + x[i] * x[i]);
   }
-  // printf("done sum at %d\n", i);
+
+  return sum;
+}
+
+float theFunction(float x[0], int M) {
+  float sum = 0;
+  int i = 0;
+  for (; i < M; i++) 
+  {
+    sum += (0.5 * x[i] + x[i] * x[i] * cos((x[i] - 128) / 128));
+  }
+
   return sum;
 }
 
 int main(int argc, char* argv[])
 {
-  const int numIterations = 3;
+  const int numIterations = 2;
   printf("Task 3!\n");
   printf("Ticks per second: %ld\n", alt_ticks_per_second());
   printf("Running %d tests\n", numIterations);
@@ -69,7 +94,7 @@ int main(int argc, char* argv[])
   // for (int i = 0; i < (1 << TEST_REPEAT); i++) y = sumVector(x, N);
   for (int i = 0; i < numIterations; i++) {
     // if ((y = sumVector(x, N)) > 0) y1++;
-    y = sumVector(x, N);
+    y = theFunction(x, N);
   }
 
   // till here
@@ -77,7 +102,7 @@ int main(int argc, char* argv[])
 
   volatile int elapsedTicks = (int)(exec_t2 - exec_t1);
   printf("ElpasedTicks: %d\n", elapsedTicks);
-  printf("RESULT: %f\n", y);
+  printf("RESULT: %f, %x\n", y, *(int*)(&y));
   printf("Num Iterations: %d\n", y1);
   // printf("Total ticks %d for %d iters\n", elapsedTicks , numIterations);
   // printf("Time Taken: %f\n",(float) elapsedTicks/numIterations);
