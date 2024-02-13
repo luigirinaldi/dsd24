@@ -1,0 +1,26 @@
+<internal_error>
+<sub_system>ERR</sub_system>
+<callstack>
+	0x7ac3f462abe6: ccl_err + 0x7be6 (_ZN15ERR_STACKWALKER15get_stack_traceEPPKviiPv + 0xd8)
+	0x7ac3f462de95: ccl_err + 0xae95 (_Z14err_terminatorv + 0x5a)
+	0x7ac402d06ae6: jtag_client + 0x82ae6 (_ZN10__cxxabiv111__terminateEPFvvE + 0x6)
+	0x7ac402d25f29: jtag_client + 0xa1f29
+	0x7ac402d06715: jtag_client + 0x82715 (__gxx_personality_v0 + 0x2b5)
+	0x7ac3e160fe73: gcc_s.so.1 + 0xfe73 (_Unwind_RaiseException_Phase2 + 0x43)
+	0x7ac3e1610397: gcc_s.so.1 + 0x10397 (_Unwind_Resume + 0x57)
+	0x7ac3e8a6dfc0: cbx_mgl + 0x59fc0 (_ZN13MGL_GENERATOR6removeEP11MGL_ELEMENTRKSsb + 0x296)
+	0x7ac3e8a6e09e: cbx_mgl + 0x5a09e (_ZN11MGL_ELEMENTD1Ev + 0x40)
+	0x7ac3e8a6f8ce: cbx_mgl + 0x5b8ce (_ZN20MGL_PARAMETER_STRINGD2Ev + 0xd2)
+	0x7ac3e788589d: cbx_altsyncram + 0x4589d (_ZN14CBX_ALTSYNCRAMD2Ev + 0x563)
+	0x7ac3e7887039: cbx_altsyncram + 0x47039 (_ZN14CBX_ALTSYNCRAMD0Ev + 0x9)
+	0x7ac3e785d13a: cbx_altsyncram + 0x1d13a (cbx_destroy_generator + 0xf)
+	0x7ac405cdc816: synth_cbxi + 0x7816 (_ZN18CBXI_DLL_INTERFACE19disconnect_from_dllEv + 0x11a)
+	0x7ac405ce2fdd: synth_cbxi + 0xdfdd (_ZN18CBXI_DLL_INTERFACED2Ev + 0x1d)
+	0x7ac3ea65e731: c.so.6 + 0x40731 (__cxa_finalize + 0xb1)
+	0x7ac405cdc1c3: synth_cbxi + 0x71c3
+</callstack>
+<error>*** Fatal Error: Unhandled Exception</error>
+<date>Tue Feb 13 17:51:42 2024
+</date>
+<version>Version 20.1.0 Build 711 06/05/2020 SJ Lite Edition</version>
+</internal_error>

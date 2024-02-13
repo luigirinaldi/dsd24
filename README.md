@@ -260,3 +260,11 @@ For the random vector, we have the following result:
 We can see that we have both reduced program size and execution time, while keeping the same rate of error.
 
 Therefore, if the application requires maximum performance, using specilised compute hardware is recommended.
+
+## Task 6
+
+When restricting the output width, it is important to note the manual's remarks which indicate only the MSBs are kept.
+
+This would give 0 unless the mulitplication result is large.
+
+![screenshot of manual](rsc/mult_man.png)

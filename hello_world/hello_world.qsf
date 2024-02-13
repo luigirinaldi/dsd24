@@ -109,8 +109,9 @@ set_global_assignment -name CDF_FILE hello_world_time_limited.cdf
 set_global_assignment -name QSYS_FILE first_nios2_system.qsys
 set_global_assignment -name SDC_FILE hw_dev_tutorial.sdc
 set_global_assignment -name BDF_FILE hello_world.bdf
-set_global_assignment -name SEARCH_PATH /home/diego/documents/dsd/hello_world
-set_global_assignment -name SEARCH_PATH /home/youlittleperson/Documents/Imperial/Year3/DSD/hello_world_2
 set_global_assignment -name QIP_FILE pll.qip
 set_global_assignment -name SIP_FILE pll.sip
+set_global_assignment -name SEARCH_PATH /home/diego/documents/dsd/task6_custom_instructions
+set_global_assignment -name SEARCH_PATH /home/diego/documents/dsd/hello_world
+set_global_assignment -name SEARCH_PATH /home/youlittleperson/Documents/Imperial/Year3/DSD/hello_world_2
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
