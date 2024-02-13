@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#define TEST_REPEAT 0
-
 // Test case 1
 // #define step 5
 // #define N 52
@@ -45,35 +43,46 @@ float sumVector(float x[0], int M)
 
 int main(int argc, char* argv[])
 {
-  printf("Task 2!\n");
-  // printf("Ticks per second: %ld\n", alt_ticks_per_second());
-  printf("Running %d tests\n", (1 << TEST_REPEAT));
+  const int numIterations = 3;
+  printf("Task 3!\n");
+  printf("Ticks per second: %ld\n", alt_ticks_per_second());
+  printf("Running %d tests\n", numIterations);
 
   // Define input vector
   float x[N];
 
 
   // Returned result
-  float y;
+  volatile float y;
 
   generateVector(x);
 
 
-  clock_t exec_t1, exec_t2;
+  volatile clock_t exec_t1, exec_t2;
 
-  exec_t1 = alt_nticks();
+  // const int numIterations = 1 << TEST_REPEAT;
 
-  
+  exec_t1 = times(NULL);
+
+  int y1 = 0;
   // The code that you want to time goes here
-  for (int i = 0; i < (1 << TEST_REPEAT); i++) y = sumVector(x, N);
+  // for (int i = 0; i < (1 << TEST_REPEAT); i++) y = sumVector(x, N);
+  for (int i = 0; i < numIterations; i++) {
+    // if ((y = sumVector(x, N)) > 0) y1++;
+    y = sumVector(x, N);
+  }
 
   // till here
-  exec_t2 = alt_nticks();
+  exec_t2 = times(NULL);
 
+  volatile int elapsedTicks = (int)(exec_t2 - exec_t1);
+  printf("ElpasedTicks: %d\n", elapsedTicks);
   printf("RESULT: %f\n", y);
+  printf("Num Iterations: %d\n", y1);
+  // printf("Total ticks %d for %d iters\n", elapsedTicks , numIterations);
+  // printf("Time Taken: %f\n",(float) elapsedTicks/numIterations);
 
-  printf("Total ticks %d for %d iters\n", (int)(exec_t2 - exec_t1), (1 << TEST_REPEAT));
-  printf("Time Taken: %f\n", (double)(exec_t2 - exec_t1)/(1 << TEST_REPEAT));
+
   return 0;
 }
 

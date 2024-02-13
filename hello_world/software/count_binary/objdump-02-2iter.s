@@ -322,7 +322,7 @@ Disassembly of section .text:
   800498:	180b883a 	mov	r5,r3
   80049c:	0800d3c0 	call	800d3c <__muldf3>
   8004a0:	01002074 	movhi	r4,129
-  8004a4:	100b883a 	mov	r5,r2
+  8004a4:	100b883a 	mov	r5,r2b
   8004a8:	180d883a 	mov	r6,r3
   8004ac:	21016104 	addi	r4,r4,1412
   8004b0:	080171c0 	call	80171c <printf>
