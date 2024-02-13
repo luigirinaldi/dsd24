@@ -219,21 +219,29 @@ Upon extensive examination two behaviours were identified as unusual: the two it
     While this solution leaves the possibility of the `printf` statement affecting the timing open, that is an instruction which is necessary to be able to measure the performance of the code and it can be assumed that even if it were affecting the `sumVector` timing it would be constant and uniform across the different optimisation settings and cache configurations.
 
 
-| Resources | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | total     |
-| --------- | ---------- | ---------- | ---------- | ---------- | ---------- | --------- |
-| LE        | 47,360     | 64640      | 99072      | 65024      | 100224     | 4,065,280 |
-| EM        | 0          | 0          | 0          | 0          | 0          | 87        |
-| MB        | 1,628      | 1640       | 1638       | 1639       | 1646       | 32,070    |
+| Resources | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | total   |
+| --------- | ---------- | ---------- | ---------- | ---------- | ---------- | ------- |
+| LE        | 47360      | 64640      | 99072      | 65024      | 100224     | 4065280 |
+| EM        | 0          | 0          | 0          | 0          | 0          | 87      |
+| MB        | 1628       | 1640       | 1638       | 1639       | 1646       | 32070   |
 
 ## Task 4
 
 We used instuction and data cache sizes of 2 KB and used compiler optimisation `O0` for this task.
 
-| Test Number | Program Size | Time (ms) | Result                    | Python `float`            | Python `double`     | Error (wrt `double`) | Relative Error |
-| ----------- | ------------ | --------- | ------------------------- | ------------------------- | ------------------- | -------------------- | -------------- |
-| 1           | 87312        | 34        | `0x4960b5d8` (920413.5)   | `0x4960b6da` (920413.6)   | (920413.6266494419) |                      |                |
-| 2           | 87332        | 1360      | `0x4c09cc78` (36124104)   | `0x4c09cc73` (36123084)   | (36123085.55197907) |                      |                |
-| 3           | 87548        | 183334    | `0x4f89bb7c` (4621531136) | `0x4f89bb2a` (4621489000) | (4621489017.888633) |                      |                |
+| Test Number | Program Size | Time (ms) | Result                    | Python `float`            | Python `double`     | Absolute Error (wrt `double`) | Relative Error |
+| ----------- | ------------ | --------- | ------------------------- | ------------------------- | ------------------- | ----------------------------- | -------------- |
+| 1           | 87312        | 34        | `0x4960b5d8` (920413.5)   | `0x4960b6da` (920413.6)   | (920413.6266494419) | 0.12665                       | 1.376e-7       |
+| 2           | 87332        | 1360      | `0x4c09cc78` (36124104)   | `0x4c09cc73` (36123084)   | (36123085.55197907) | 18.448                        | 5.107e-7       |
+| 3           | 87548        | 183334    | `0x4f89bb7c` (4621531136) | `0x4f89bb2a` (4621489000) | (4621489017.888633) | 42118.1                       | 9.114e-6       |
+
+Hardware Resource Usage:
+
+| Resources | I 2k, D 2k |
+| --------- | ---------- |
+| LE        | 47360      |
+| EM        | 0          |
+| MB        | 1634       |
 
 For the random vector, we have the following result:
 
@@ -242,3 +250,13 @@ For the random vector, we have the following result:
 | 86256        | 1706      | `0x4c1e9e0` (41571200) |
 
 ## Task 5
+
+| Test Number | Program Size | Time (ms) | Result                    | Python `float`            | Python `double`     |
+| ----------- | ------------ | --------- | ------------------------- | ------------------------- | ------------------- |
+| 1           | 85144        | 16        | `0x4960b5d8` (920413.5)   | `0x4960b6da` (920413.6)   | (920413.6266494419) |
+| 2           | 85144        | 660       | `0x4c09cc78` (36124104)   | `0x4c09cc73` (36123084)   | (36123085.55197907) |
+| 3           | 85328        | 78624     | `0x4f89bb7c` (4621531136) | `0x4f89bb2a` (4621489000) | (4621489017.888633) |
+
+We can see that we have both reduced program size and execution time, while keeping the same rate of error.
+
+Therefore, if the application requires maximum performance, using specilised compute hardware is recommended.
