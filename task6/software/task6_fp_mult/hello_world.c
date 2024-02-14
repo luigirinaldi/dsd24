@@ -20,13 +20,13 @@ int main()
   printf("Multiplication result from custom instr: %d\n", d);
 
   float e, f, g, h;
-  e = 0.1;
-  f = 0.2;
+  e = 1.0;
+  f = 1.0;
   g = e * f;
   printf("Float mul result: %f\n", g);
 
   h = ALT_CI_FP_MULT_0(e, f);
-  printf("Float mul res custom: %f\n", h);
+  printf("Float mul res custom: %f\n", *(int*)&h);
 
   return 0;
 }

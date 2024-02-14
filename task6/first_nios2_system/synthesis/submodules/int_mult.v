@@ -49,7 +49,7 @@ module int_mult (
 	// wire [31:0] sub_wire0;
 	// wire [31:0] result = sub_wire0[31:0];
 
-	assign result = dataa * datab;
+	assign result = dataa * datab + 69;
 
 	// lpm_mult	lpm_mult_component (
 	// 			.dataa (dataa),

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="first_nios2_system" kind="system" version="20.1" fabric="QSYS">
- <!-- Format version 20.1 711 (Future versions may contain additional information.) -->
- <!-- 2024.02.13.17:50:37 -->
+ <!-- Format version 20.1 720 (Future versions may contain additional information.) -->
+ <!-- 2024.02.13.22:23:39 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1707846631</value>
+  <value>1707863014</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -2279,7 +2279,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="customInstSlavesSystemInfo">
    <type>java.lang.String</type>
-   <value><![CDATA[<info><slave name="int_mult_0" baseAddress="0" addressSpan="1" clockCycleType="COMBINATORIAL" /></info>]]></value>
+   <value><![CDATA[<info><slave name="int_mult" baseAddress="0" addressSpan="1" clockCycleType="COMBINATORIAL" /></info>]]></value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -7176,7 +7176,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1707846631</value>
+   <value>1707863014</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -7196,7 +7196,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1707846631</value>
+   <value>1707863014</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -7212,7 +7212,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1707846631</value>
+   <value>1707863014</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -14523,6 +14523,6 @@ parameters are a RESULT of the module parameters. -->
   <displayName>Reset Connection</displayName>
   <version>20.1</version>
  </plugin>
- <reportVersion>20.1 711</reportVersion>
- <uniqueIdentifier>201E88D296500000018DA3978622</uniqueIdentifier>
+ <reportVersion>20.1 720</reportVersion>
+ <uniqueIdentifier>201E88D296500000018DA4917FF0</uniqueIdentifier>
 </EnsembleReport>
