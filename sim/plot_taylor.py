@@ -27,6 +27,8 @@ def macTerm(x, n):
 def MacLaurinCos(x, terms = 4):
   return np.sum(np.vectorize(macTerm)(x, np.arange(0,terms)))
 
+macLaurCosVec = np.vectorize(MacLaurinCos)
+
 if __name__=='__main__' :
   # Instantiate the parser
   parser = argparse.ArgumentParser(description='Taylor Series testing')
@@ -40,7 +42,7 @@ if __name__=='__main__' :
   
   random_samples = rng.random(size=args.samples) * 2 - 1
   
-  macLaurCosVec = np.vectorize(MacLaurinCos)
+  
   
   # Taylor for different number of terms
   

@@ -227,7 +227,9 @@ Upon extensive examination two behaviours were identified as unusual: the two it
 
 ## Task 4
 
-We used instuction and data cache sizes of 2 KB and used compiler optimisation `O0` for this task.
+We use instuction and data cache sizes of 2 KB and used compiler optimisation `O0` for this task in order to obtain a baseline comparison.
+
+(Setting the sys_clk to 100us instead of 1ms introduces signifcant overhead, for example test 2 goes from 1360 ms to 17181000 us, extra 400ms)
 
 | Test Number | Program Size | Time (ms) | Result                    | Python `float`            | Python `double`     | Error (wrt `double`) | Relative Error |
 | ----------- | ------------ | --------- | ------------------------- | ------------------------- | ------------------- | -------------------- | -------------- |
@@ -240,5 +242,35 @@ For the random vector, we have the following result:
 | Program Size | Time (ms) | Result                 |
 | ------------ | --------- | ---------------------- |
 | 86256        | 1706      | `0x4c1e9e0` (41571200) |
+
+
+### Constant Coefficient division
+
+The line `sum += (0.5 * x[i] + x[i] * x[i] * cos((x[i] - 128.0f) /128));` is replaced with `sum += (coeff1 * x[i] + x[i] * x[i] * cos((x[i] - 128.0f) * coeff2))`, where `coeff1` and `coeff2` are defined as follows : `const float coeff1 = 0.5, coeff2 = 1 / 128.0f;` as global variables. 
+
+### Using cosf
+
+Use the floating point cosine instead of the double precision cosine, latency decrease to a third.
+
+### Taylor Series Expansion
+
+Having simulated the behaviour of the Taylor series of the cosine function about the point 0 in python, it was concluded the appropriate amount of terms to use is 3, up to x^4 and this corresponds to an MSE of about 10^-4. 
+
+| Test Number | Program Size | Time (ms) | Result                   | Python `float`            | Python `double`     | Error (wrt `double`) | Relative Error         |
+| ----------- | ------------ | --------- | ------------------------ | ------------------------- | ------------------- | -------------------- | ---------------------- |
+| 1           | 87312        | 8.1       | `0x4960c9c4` (920732.25) | `0x4960b6da` (920413.6)   | (920413.6266494419) | 318.625              | 0.00034617588369576776 |
+| 2           | 87332        | 324       | `4c09d735` (36134100)    | `0x4c09cc73` (36123084)   | (36123085.55197907) | 11014.448020927608   | 0.00030491437408021086 |
+| 3           | 87548        | 42745     | `4f89c567` (4622831104)  | `0x4f89bb2a` (4621489000) | (4621489017.888633) | 1342086.1113672256   | 0.0002904012334925702  |
+| random      | 86256        | 327       | `4c1ea268` (41585056)    | no                        |
+
+### Compiled results
+
+| Test Number | Constant Coeff | Cosf  | Taylor |
+| ----------- | -------------- | ----- | ------ |
+| 1           | 32.15          | 13.57 | 8.1    |
+| 2           | 1276.2         | 540   | 324    |
+| 3           | 179947         | 69468 | 42745  |
+| Random      | 1659           | 607   | 327    |
+
 
 ## Task 5
