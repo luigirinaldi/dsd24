@@ -13,12 +13,12 @@
 // Test case 1
 // #define step 5
 // #define N 52
-// #define NUM_CASES 100
+// #define NUM_CASES 1000
 
 // Test case 2
 // #define step 1/8.0
 // #define N 2041
-// #define NUM_CASES 10
+// #define NUM_CASES 100
 
 
 // Test case 3

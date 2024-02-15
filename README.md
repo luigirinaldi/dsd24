@@ -362,12 +362,28 @@ Therefore, the instruction cache should be increased to at least 4kB. With the l
 
 ## Task 5
 
+Adding the multipliers and running the tests with 2kB of Instruction and Data cache and the most naive code yield the following baseline performance:
+
 | Test Number | Program Size | Time (ms) | Result                    | Python `float`            | Python `double`     |
 | ----------- | ------------ | --------- | ------------------------- | ------------------------- | ------------------- |
 | 1           | 85144        | 16        | `0x4960b5d8` (920413.5)   | `0x4960b6da` (920413.6)   | (920413.6266494419) |
 | 2           | 85144        | 660       | `0x4c09cc78` (36124104)   | `0x4c09cc73` (36123084)   | (36123085.55197907) |
 | 3           | 85328        | 78624     | `0x4f89bb7c` (4621531136) | `0x4f89bb2a` (4621489000) | (4621489017.888633) |
 
-We can see that we have both reduced program size and execution time, while keeping the same rate of error.
+We can see that we have both reduced program size and execution time compared to Task4 baseline, while keeping the same rate of error.
 
-Therefore, if the application requires maximum performance, using specilised compute hardware is recommended.
+Therefore, if the application requires maximum performance, using specilised compute hardware is recommended. (??)
+
+### Code modification and 4kB cache
+
+Reintroducing the changes to the code performed in task 4 the performance improves about tenfold compared to the initial baseline, inline with the improvements observed in task4.
+
+The stark performance improvment comes from the presense of the intger mulitplier, which, as was observed in task4 Cache Analysis, are used in the floating point mulitplication emulation. This means the code is now emulating the floating point mulitplication only, and can do so more quickly. The stack size is also smaller, however this is marginal since the `<__mulsf3>` was only 80 bytes long, and therefore the 4kB cache is still necessary.
+
+### Performance summary
+
+| Test Number | Baseline | Task4 impr |
+| ----------- | -------- | ---------- |
+| 1           | 16       | 1.2        |
+| 2           | 660      | 47.5       |
+| 3           | 78624    | 7303       |
