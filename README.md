@@ -338,7 +338,7 @@ Timing Loop:
 
 The toal therefore comes out to `3584` bytes, where each unique function call is counted only once.
 
-Therefore, the instruction cache should be increased to at least 4kB. With the large cache 
+Therefore, the instruction cache should be increased to at least 4kB. With the large cache and all previously described changes the final performance is improved tenfold!.
 
 
 ### Compiled results
