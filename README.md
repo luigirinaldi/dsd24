@@ -219,15 +219,18 @@ Upon extensive examination two behaviours were identified as unusual: the two it
     While this solution leaves the possibility of the `printf` statement affecting the timing open, that is an instruction which is necessary to be able to measure the performance of the code and it can be assumed that even if it were affecting the `sumVector` timing it would be constant and uniform across the different optimisation settings and cache configurations.
 
 
-| Resources | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | total   |
-| --------- | ---------- | ---------- | ---------- | ---------- | ---------- | ------- |
-| LE        | 47360      | 64640      | 99072      | 65024      | 100224     | 4065280 |
-| EM        | 0          | 0          | 0          | 0          | 0          | 87      |
-| MB        | 1628       | 1640       | 1638       | 1639       | 1646       | 32070   |
+| Resources   | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | total   |
+| ----------- | ---------- | ---------- | ---------- | ---------- | ---------- | ------- |
+| MB          | 47360      | 64640      | 99072      | 65024      | 100224     | 4065280 |
+| EM          | 0          | 0          | 0          | 0          | 0          | 87      |
+| LE          | 1628       | 1640       | 1638       | 1639       | 1646       | 32070   |
+| Utilisation | 0.021      | 0.022      | 0.025      | 0.022      | 0.025      |
 
 ## Task 4
 
-We used instuction and data cache sizes of 2 KB and used compiler optimisation `O0` for this task.
+We use instuction and data cache sizes of 2 KB and used compiler optimisation `O0` for this task in order to obtain a baseline comparison.
+
+(Setting the sys_clk to 100us instead of 1ms introduces signifcant overhead, for example test 2 goes from 1360 ms to 17181000 us, extra 400ms)
 
 | Test Number | Program Size | Time (ms) | Result                    | Python `float`            | Python `double`     | Absolute Error (wrt `double`) | Relative Error |
 | ----------- | ------------ | --------- | ------------------------- | ------------------------- | ------------------- | ----------------------------- | -------------- |
@@ -237,11 +240,12 @@ We used instuction and data cache sizes of 2 KB and used compiler optimisation `
 
 Hardware Resource Usage:
 
-| Resources | I 2k, D 2k |
-| --------- | ---------- |
-| LE        | 47360      |
-| EM        | 0          |
-| MB        | 1634       |
+| Resources   | I 2k, D 2k |
+| ----------- | ---------- |
+| MB          | 47360      |
+| EM          | 0          |
+| LE          | 1634       |
+| Utilisation | 0.021      |
 
 For the random vector, we have the following result:
 
@@ -249,7 +253,118 @@ For the random vector, we have the following result:
 | ------------ | --------- | ---------------------- |
 | 86256        | 1706      | `0x4c1e9e0` (41571200) |
 
+
+### Constant Coefficient division
+
+The line `sum += (0.5 * x[i] + x[i] * x[i] * cos((x[i] - 128.0f) /128));` is replaced with `sum += (coeff1 * x[i] + x[i] * x[i] * cos((x[i] - 128.0f) * coeff2))`, where `coeff1` and `coeff2` are defined as follows : `const float coeff1 = 0.5, coeff2 = 1 / 128.0f;` as global variables. 
+
+### Using cosf
+
+Use the floating point cosine instead of the double precision cosine, latency decrease to a third.
+
+### Taylor Series Expansion
+
+Having simulated the behaviour of the Taylor series of the cosine function about the point 0 in python, it was concluded the appropriate amount of terms to use is 3, up to x^4 and this corresponds to an MSE of about 10^-4. 
+
+| Test Number | Program Size | Time (ms) | Result                   | Python `float`            | Python `double`     | Error (wrt `double`) | Relative Error         |
+| ----------- | ------------ | --------- | ------------------------ | ------------------------- | ------------------- | -------------------- | ---------------------- |
+| 1           | 87312        | 8.1       | `0x4960c9c4` (920732.25) | `0x4960b6da` (920413.6)   | (920413.6266494419) | 318.625              | 0.00034617588369576776 |
+| 2           | 87332        | 324       | `4c09d735` (36134100)    | `0x4c09cc73` (36123084)   | (36123085.55197907) | 11014.448020927608   | 0.00030491437408021086 |
+| 3           | 87548        | 42745     | `4f89c567` (4622831104)  | `0x4f89bb2a` (4621489000) | (4621489017.888633) | 1342086.1113672256   | 0.0002904012334925702  |
+| random      | 86256        | 327       | `4c1ea268` (41585056)    | no                        |
+
+### Performing power of two floating point division manually
+
+Exponent is extracted and value is subtracted. 
+
+Code looks like this. Tried using union to avoid having to make different vars for temporary int and return float but was slower than current implementation.
+
+```
+#define DividePow2(val, pow) (*(int*)&val != 0 ? ((*(int*)&val & 0x807fffff) | ((((*(int*)&val >> 23) & 0xff) - pow) << 23) ) : 0)
+
+
+  for (; i < M; i++) 
+  {
+    const float diff = x[i] - 128.0f;
+
+    const __uint32_t new_float = DividePow2(diff, 7);
+    const float cos_term = *(float*)&new_float;
+    const float cos_2 = cos_term * cos_term;
+    const float cos_4 = cos_2 * cos_2;
+
+    const __uint32_t term1_int =  DividePow2(cos_2, 1);
+    const float term1 =  *(float*)&term1_int;
+
+    const float cosine = 1 - term1 + cos_4 * c_term2;
+    
+    sum += (coeff1 * x[i] + (x[i] * x[i]) * cosine);
+  }
+
+```
+
+### Removing subtraction
+
+Upon analysing the assembly generated it is possible to observe that the program is performing calls to `<__addsf3>` `<__mulsf3>` and `<__subsf3>`. While the add and multiplication are clearly necessary the subtraction could be removed to save on instruction cache. 
+
+The two instances of subtraction within the function are:
+
+```
+    const float diff = x[i] - 128.0f;
+
+    const float cosine = 1 - term1 + cos_4 * c_term2;
+```
+
+The first subtraction can be replaced with `const float diff = x[i] + -128.0f;`. 
+The second subtraction is performed on the result of the custom division, therefore the number can be easily inverted by setting the first bit, as follows:
+
+```
+     __uint32_t term1_int =  DividePow2(cos_2, 1);
+     term1_int |= 0x80000000;
+    const float term1 =  *(float*)&term1_int;
+
+    const float cosine = 1 + term1  + cos_4 * c_term2;
+```
+
+Oberserving the produced assembly, it annoyingly still contains a call to `<__subsf3>`. Measuring the latency shows an improvment for testcases 1 and 2, and curiously a worsening (not the right word) for test case 3. This might be due to the different cache access patterns of the test cases, where test case 3 completely saturates the data cache ?? (nonsense probably).
+
+### Cache Analysis
+
+3584
+
+Analysing the assembly code produced by the compiler it is possible to determine the depth of the call stack for a given function, and therefore how much instruction cache is needed for thr entirety of the function to be run off of cache. Following is a diagram of the call stack
+
+```
+Timing Loop:
+  Inlined sum + cosine function : 188 bytes
+    |
+    |-> call `<__subsf3>` : 1152 bytes
+    | |-> call `<__clzsi2>` : 80 bytes
+    |-> call `<__addsf3>` : 1112 bytes
+    | |-> call `<__clzsi2>` : 80 
+    |-> call `<__mulsf3>` : 1016 bytes
+      |-> call `<__clzsi2>` : 80  
+      |-> call `<__mulsi3>` : 36  
+```
+
+The toal therefore comes out to `3584` bytes, where each unique function call is counted only once.
+
+Therefore, the instruction cache should be increased to at least 4kB. With the large cache and all previously described changes the final performance is improved tenfold!.
+
+
+### Compiled results
+
+| Test Number | Constant Coeff | Cosf  | Taylor | Fp Magic | Ofast | Ofast sizes | no sub (unused) | 4k I  |
+| ----------- | -------------- | ----- | ------ | -------- | ----- | ----------- | --------------- | ----- |
+| 1           | 32.15          | 13.57 | 8.1    | 6.6      | 6.4   | 77920       | 6               | 3.3   |
+| 2           | 1276.2         | 540   | 324    | 267      | 252   | 77924       | 231             | 134   |
+| 3           | 179947         | 69468 | 42745  | 36458    | 30379 | 77852       | 31323           | 18304 |
+| Random      | 1659           | 607   | 327    | 291      | 235   | 78572       | 235             | 169   |
+
+
+
 ## Task 5
+
+Adding the multipliers and running the tests with 2kB of Instruction and Data cache and the most naive code yield the following baseline performance:
 
 | Test Number | Program Size | Time (ms) | Result                    | Python `float`            | Python `double`     |
 | ----------- | ------------ | --------- | ------------------------- | ------------------------- | ------------------- |
@@ -257,9 +372,31 @@ For the random vector, we have the following result:
 | 2           | 85144        | 660       | `0x4c09cc78` (36124104)   | `0x4c09cc73` (36123084)   | (36123085.55197907) |
 | 3           | 85328        | 78624     | `0x4f89bb7c` (4621531136) | `0x4f89bb2a` (4621489000) | (4621489017.888633) |
 
-We can see that we have both reduced program size and execution time, while keeping the same rate of error.
+We can see that we have both reduced program size and execution time compared to Task4 baseline, while keeping the same rate of error.
 
-Therefore, if the application requires maximum performance, using specilised compute hardware is recommended.
+
+Therefore, if the application requires maximum performance, using specilised compute hardware is recommended. (??)
+
+| Resources   | I 2k, D 2k | I 4k, D 2k |
+| ----------- | ---------- | ---------- |
+| MB          | 47360      | 65024      |
+| EM          | 3          | 3          |
+| LE          | 1663       | 1663       |
+| Utilisation | 0.032      | 0.034      |
+
+### Code modification and 4kB cache
+
+Reintroducing the changes to the code performed in task 4 the performance improves about tenfold compared to the initial baseline, inline with the improvements observed in task4.
+
+The stark performance improvment comes from the presense of the intger mulitplier, which, as was observed in task4 Cache Analysis, are used in the floating point mulitplication emulation. This means the code is now emulating the floating point mulitplication only, and can do so more quickly. The stack size is also smaller, however this is marginal since the `<__mulsf3>` was only 80 bytes long, and therefore the 4kB cache is still necessary.
+
+### Performance summary
+
+| Test Number | Baseline | Task4 impr + 4kB | Task4 impr |
+| ----------- | -------- | ---------------- | ---------- |
+| 1           | 16       | 1.2              | 3.1        |
+| 2           | 660      | 47.5             | 123        |
+| 3           | 78624    | 7303             | 16061      |
 
 ## Task 6
 

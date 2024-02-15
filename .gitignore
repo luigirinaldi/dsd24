@@ -85,3 +85,5 @@ PLLJ_PLLSPE_INFO.txt
 
 hello_world/first_nios2_system/**
 
+
+**/__pycache__

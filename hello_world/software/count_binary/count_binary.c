@@ -8,22 +8,31 @@
 #include <unistd.h>
 #include <math.h>
 
+#define DividePow2(val, pow) (*(int*)&val != 0 ? ((*(int*)&val & 0x807fffff) | ((((*(int*)&val >> 23) & 0xff) - pow) << 23) ) : 0)
+
 // Test case 1
-// #define step 5
-// #define N 52
+#define step 5
+#define N 52
+#define NUM_CASES 1000
 
 // Test case 2
 // #define step 1/8.0
 // #define N 2041
+// #define NUM_CASES 100
+
 
 // Test case 3
-#define step 1/1024.0
-#define N 261121
+// #define step 1/1024.0
+// #define N 261121
+// #define NUM_CASES 1
+
 
 // Test case 4
 // #define N 2323
 // #define RANDSEED 334
 // #define MAXVAL 255
+// #define NUM_CASES 10
+
 
 #ifdef RANDSEED
 
@@ -61,12 +70,31 @@ float sumVector(float x[0], int M)
   return sum;
 }
 
+
+// constant coefficient division
+const float coeff1 = 0.5, coeff2 = 1 / 128.0f, coeff3 = 128.0f;
+// taylor series terms 
+const float c_term1 = 1/2.0, c_term2 = 1 / 24.0f;
+
 float theFunction(float x[0], int M) {
   float sum = 0;
   int i = 0;
   for (; i < M; i++) 
   {
-    sum += (0.5 * x[i] + x[i] * x[i] * cos((x[i] - 128) / 128));
+    const float diff =  x[i] + -128.0f;
+
+    const __uint32_t new_float = DividePow2(diff, 7);
+    const float cos_term = *(float*)&new_float;
+
+    const float cos_2 = cos_term * cos_term;
+    const float cos_4 = cos_2 * cos_2;
+
+     __uint32_t term1_int =  DividePow2(cos_2, 1);
+    const float term1 =  *(float*)&term1_int;
+
+    const float cosine = 1 - term1  + cos_4 * c_term2;
+    
+    sum += (coeff1 * x[i] + (x[i] * x[i]) * cosine);
   }
 
   return sum;
@@ -74,7 +102,7 @@ float theFunction(float x[0], int M) {
 
 int main(int argc, char* argv[])
 {
-  const int numIterations = 1;
+  const int numIterations = NUM_CASES;
   printf("Task 3!\n");
   printf("Ticks per second: %ld\n", alt_ticks_per_second());
   printf("Running %d tests\n", numIterations);
@@ -96,10 +124,8 @@ int main(int argc, char* argv[])
   exec_t1 = times(NULL);
 
   int y1 = 0;
-  // The code that you want to time goes here
-  // for (int i = 0; i < (1 << TEST_REPEAT); i++) y = sumVector(x, N);
+
   for (int i = 0; i < numIterations; i++) {
-    // if ((y = sumVector(x, N)) > 0) y1++;
     y = theFunction(x, N);
   }
 
