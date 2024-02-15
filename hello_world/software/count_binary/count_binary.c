@@ -16,15 +16,15 @@
 // #define NUM_CASES 100
 
 // Test case 2
-#define step 1/8.0
-#define N 2041
-#define NUM_CASES 10
+// #define step 1/8.0
+// #define N 2041
+// #define NUM_CASES 10
 
 
 // Test case 3
-// #define step 1/1024.0
-// #define N 261121
-// #define NUM_CASES 1
+#define step 1/1024.0
+#define N 261121
+#define NUM_CASES 1
 
 
 // Test case 4
