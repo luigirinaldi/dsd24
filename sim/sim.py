@@ -14,16 +14,16 @@ def hexToNum ( string, format='!f'):
 def gen_vector (args):
   return [x * args['step'] for x in range(0,args['N'])]
 
-def cosine_func(x):  
-  res =  0.5 * x + np.power(x,2) * np.cos((x-128)/128)
+def cosine_func(x, cos = np.cos):  
+  res =  0.5 * x + np.power(x,2) * cos((x-128)/128)
   return res
 
 def task3_func(x):
   return x + x**2
 
 def compute_func(vec, func, type=np.double):
-  vals = np.array(vec, dtype=type)
-  return (func(vals)).sum()
+  vals = vec.astype(type)
+  return (func(vals)).sum(-1)
   # return sum([func(x) for x in np.array(vec, dtype=type)])
 
 if __name__ == '__main__':
