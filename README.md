@@ -263,14 +263,69 @@ Having simulated the behaviour of the Taylor series of the cosine function about
 | 3           | 87548        | 42745     | `4f89c567` (4622831104)  | `0x4f89bb2a` (4621489000) | (4621489017.888633) | 1342086.1113672256   | 0.0002904012334925702  |
 | random      | 86256        | 327       | `4c1ea268` (41585056)    | no                        |
 
+### Performing power of two floating point division manually
+
+Exponent is extracted and value is subtracted. 
+
+Code looks like this. Tried using union to avoid having to make different vars for temporary int and return float but was slower than current implementation.
+
+```
+#define DividePow2(val, pow) (*(int*)&val != 0 ? ((*(int*)&val & 0x807fffff) | ((((*(int*)&val >> 23) & 0xff) - pow) << 23) ) : 0)
+
+
+  for (; i < M; i++) 
+  {
+    const float diff = x[i] - 128.0f;
+
+    const __uint32_t new_float = DividePow2(diff, 7);
+    const float cos_term = *(float*)&new_float;
+    const float cos_2 = cos_term * cos_term;
+    const float cos_4 = cos_2 * cos_2;
+
+    const __uint32_t term1_int =  DividePow2(cos_2, 1);
+    const float term1 =  *(float*)&term1_int;
+
+    const float cosine = 1 - term1 + cos_4 * c_term2;
+    
+    sum += (coeff1 * x[i] + (x[i] * x[i]) * cosine);
+  }
+
+```
+
+### Removing subtraction
+
+Upon analysing the assembly generated it is possible to observe that the program is performing calls to `<__addsf3>` `<__mulsf3>` and `<__subsf3>`. While the add and multiplication are clearly necessary the subtraction could be removed to save on instruction cache. 
+
+The two instances of subtraction within the function are:
+
+```
+    const float diff = x[i] - 128.0f;
+
+    const float cosine = 1 - term1 + cos_4 * c_term2;
+```
+
+The first subtraction can be replaced with `const float diff = x[i] + -128.0f;`. 
+The second subtraction is performed on the result of the custom division, therefore the number can be easily inverted by setting the first bit, as follows:
+
+```
+     __uint32_t term1_int =  DividePow2(cos_2, 1);
+     term1_int |= 0x80000000;
+    const float term1 =  *(float*)&term1_int;
+
+    const float cosine = 1 + term1  + cos_4 * c_term2;
+```
+
+Oberserving the produced assembly, it annoyingly still contains a call to `<__subsf3>`. Measuring the latency shows an improvment for testcases 1 and 2, and curiously a worsening (not the right word) for test case 3. This might be due to the different cache access patterns of the test cases, where test case 3 completely saturates the data cache ?? (nonsense probably).
+
 ### Compiled results
 
-| Test Number | Constant Coeff | Cosf  | Taylor |
-| ----------- | -------------- | ----- | ------ |
-| 1           | 32.15          | 13.57 | 8.1    |
-| 2           | 1276.2         | 540   | 324    |
-| 3           | 179947         | 69468 | 42745  |
-| Random      | 1659           | 607   | 327    |
+| Test Number | Constant Coeff | Cosf  | Taylor | Fp Magic | Ofast | Ofast sizes | no sub |
+| ----------- | -------------- | ----- | ------ | -------- | ----- | ----------- | ------ |
+| 1           | 32.15          | 13.57 | 8.1    | 6.6      | 6.4   | 77920       | 6      |
+| 2           | 1276.2         | 540   | 324    | 267      | 252   | 77924       | 231    |
+| 3           | 179947         | 69468 | 42745  | 36458    | 30379 | 77852       | 31323  |
+| Random      | 1659           | 607   | 327    | 291      | 235   | 78572       | 235    |
+
 
 
 ## Task 5
