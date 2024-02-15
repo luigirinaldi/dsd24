@@ -11,9 +11,9 @@
 #define DividePow2(val, pow) (*(int*)&val != 0 ? ((*(int*)&val & 0x807fffff) | ((((*(int*)&val >> 23) & 0xff) - pow) << 23) ) : 0)
 
 // Test case 1
-// #define step 5
-// #define N 52
-// #define NUM_CASES 1000
+#define step 5
+#define N 52
+#define NUM_CASES 1000
 
 // Test case 2
 // #define step 1/8.0
@@ -22,9 +22,9 @@
 
 
 // Test case 3
-#define step 1/1024.0
-#define N 261121
-#define NUM_CASES 1
+// #define step 1/1024.0
+// #define N 261121
+// #define NUM_CASES 1
 
 
 // Test case 4

@@ -219,11 +219,12 @@ Upon extensive examination two behaviours were identified as unusual: the two it
     While this solution leaves the possibility of the `printf` statement affecting the timing open, that is an instruction which is necessary to be able to measure the performance of the code and it can be assumed that even if it were affecting the `sumVector` timing it would be constant and uniform across the different optimisation settings and cache configurations.
 
 
-| Resources | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | total   |
-| --------- | ---------- | ---------- | ---------- | ---------- | ---------- | ------- |
-| LE        | 47360      | 64640      | 99072      | 65024      | 100224     | 4065280 |
-| EM        | 0          | 0          | 0          | 0          | 0          | 87      |
-| MB        | 1628       | 1640       | 1638       | 1639       | 1646       | 32070   |
+| Resources   | I 2k, D 2k | I 2k, D 4k | I 2k, D 8k | I 4k, D 2k | I 8k, D 2k | total   |
+| ----------- | ---------- | ---------- | ---------- | ---------- | ---------- | ------- |
+| MB          | 47360      | 64640      | 99072      | 65024      | 100224     | 4065280 |
+| EM          | 0          | 0          | 0          | 0          | 0          | 87      |
+| LE          | 1628       | 1640       | 1638       | 1639       | 1646       | 32070   |
+| Utilisation | 0.021      | 0.022      | 0.025      | 0.022      | 0.025      |
 
 ## Task 4
 
@@ -239,11 +240,12 @@ We use instuction and data cache sizes of 2 KB and used compiler optimisation `O
 
 Hardware Resource Usage:
 
-| Resources | I 2k, D 2k |
-| --------- | ---------- |
-| LE        | 47360      |
-| EM        | 0          |
-| MB        | 1634       |
+| Resources   | I 2k, D 2k |
+| ----------- | ---------- |
+| MB          | 47360      |
+| EM          | 0          |
+| LE          | 1634       |
+| Utilisation | 0.021      |
 
 For the random vector, we have the following result:
 
@@ -374,6 +376,13 @@ We can see that we have both reduced program size and execution time compared to
 
 Therefore, if the application requires maximum performance, using specilised compute hardware is recommended. (??)
 
+| Resources   | I 2k, D 2k | I 4k, D 2k |
+| ----------- | ---------- | ---------- |
+| MB          | 47360      | 65024      |
+| EM          | 3          | 3          |
+| LE          | 1663       | 1663       |
+| Utilisation | 0.032      | 0.034      |
+
 ### Code modification and 4kB cache
 
 Reintroducing the changes to the code performed in task 4 the performance improves about tenfold compared to the initial baseline, inline with the improvements observed in task4.
@@ -382,8 +391,8 @@ The stark performance improvment comes from the presense of the intger mulitplie
 
 ### Performance summary
 
-| Test Number | Baseline | Task4 impr |
-| ----------- | -------- | ---------- |
-| 1           | 16       | 1.2        |
-| 2           | 660      | 47.5       |
-| 3           | 78624    | 7303       |
+| Test Number | Baseline | Task4 impr + 4kB | Task4 impr |
+| ----------- | -------- | ---------------- | ---------- |
+| 1           | 16       | 1.2              | 3.1        |
+| 2           | 660      | 47.5             | 123        |
+| 3           | 78624    | 7303             | 16061      |
