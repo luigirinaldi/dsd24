@@ -317,14 +317,38 @@ The second subtraction is performed on the result of the custom division, theref
 
 Oberserving the produced assembly, it annoyingly still contains a call to `<__subsf3>`. Measuring the latency shows an improvment for testcases 1 and 2, and curiously a worsening (not the right word) for test case 3. This might be due to the different cache access patterns of the test cases, where test case 3 completely saturates the data cache ?? (nonsense probably).
 
+### Cache Analysis
+
+3584
+
+Analysing the assembly code produced by the compiler it is possible to determine the depth of the call stack for a given function, and therefore how much instruction cache is needed for thr entirety of the function to be run off of cache. Following is a diagram of the call stack
+
+```
+Timing Loop:
+  Inlined sum + cosine function : 188 bytes
+    |
+    |-> call `<__subsf3>` : 1152 bytes
+    | |-> call `<__clzsi2>` : 80 bytes
+    |-> call `<__addsf3>` : 1112 bytes
+    | |-> call `<__clzsi2>` : 80 
+    |-> call `<__mulsf3>` : 1016 bytes
+      |-> call `<__clzsi2>` : 80  
+      |-> call `<__mulsi3>` : 36  
+```
+
+The toal therefore comes out to `3584` bytes, where each unique function call is counted only once.
+
+Therefore, the instruction cache should be increased to at least 4kB. With the large cache 
+
+
 ### Compiled results
 
-| Test Number | Constant Coeff | Cosf  | Taylor | Fp Magic | Ofast | Ofast sizes | no sub |
-| ----------- | -------------- | ----- | ------ | -------- | ----- | ----------- | ------ |
-| 1           | 32.15          | 13.57 | 8.1    | 6.6      | 6.4   | 77920       | 6      |
-| 2           | 1276.2         | 540   | 324    | 267      | 252   | 77924       | 231    |
-| 3           | 179947         | 69468 | 42745  | 36458    | 30379 | 77852       | 31323  |
-| Random      | 1659           | 607   | 327    | 291      | 235   | 78572       | 235    |
+| Test Number | Constant Coeff | Cosf  | Taylor | Fp Magic | Ofast | Ofast sizes | no sub (unused) | 4k I  |
+| ----------- | -------------- | ----- | ------ | -------- | ----- | ----------- | --------------- | ----- |
+| 1           | 32.15          | 13.57 | 8.1    | 6.6      | 6.4   | 77920       | 6               | 3.3   |
+| 2           | 1276.2         | 540   | 324    | 267      | 252   | 77924       | 231             | 134   |
+| 3           | 179947         | 69468 | 42745  | 36458    | 30379 | 77852       | 31323           | 18304 |
+| Random      | 1659           | 607   | 327    | 291      | 235   | 78572       | 235             | 169   |
 
 
 
