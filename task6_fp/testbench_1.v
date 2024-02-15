@@ -5,6 +5,7 @@ module tb ();
 	reg [31:0] dataa;
 	reg [31:0] datab; 
 	reg clk;
+  reg clk_en;
 	reg reset;
 
 	//Output from DUT is wire type
@@ -17,6 +18,7 @@ module tb ();
 		.b(datab), 
 		.q(result),
 		.areset(reset),
+    .en(clk_en),
 		.clk(clk)
 	);
 
@@ -33,8 +35,9 @@ module tb ();
 		// intialise/set input
 		clk = 1'b0;
 		reset = 1'b1;
+    clk_en = 1'b0;
 		#5 reset = 1'b0;
-		
+		clk_en = 1'b1;
 		// If using a clock
 		@(posedge clk); 
 		

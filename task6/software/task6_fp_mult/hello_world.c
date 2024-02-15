@@ -1,32 +1,34 @@
 #include <stdio.h>
 #include "system.h"
+#include <sys/times.h>
 
-#define ALT_CI_INT_MULT_0(A,B) __builtin_custom_inii(ALT_CI_INT_MULT_0_N,(A),(B))
-#define ALT_CI_INT_MULT_0_N 0x0
-#define ALT_CI_FP_MULT_0(A,B) __builtin_custom_fnff(ALT_CI_FP_MULT_0_N,(A),(B))
-#define ALT_CI_FP_MULT_0_N 0x1
+// #define ALT_CI_FP_MULT_0(A,B) __builtin_custom_fnff(ALT_CI_FP_MULT_0_N,(A),(B))
+// #define ALT_CI_FP_MULT_0_N 0x0
 
 int main()
 {
   printf("Hello from Nios II!\n");
 
-  int a, b, c, d;
-  a = 2;
-  b = 4;
-  c = a * b;
-  printf("Multiplication result: %d\n", c);
+  volatile clock_t exec_t1, exec_t2;
 
-  d = ALT_CI_INT_MULT_0(a, b);
-  printf("Multiplication result from custom instr: %d\n", d);
 
-  float e, f, g, h;
-  e = 1.0;
-  f = 1.0;
-  g = e * f;
-  printf("Float mul result: %f\n", g);
+  const float e= 14.6, f= 34.5;
+  volatile float g, h;
 
-  h = ALT_CI_FP_MULT_0(e, f);
-  printf("Float mul res custom: %f\n", *(int*)&h);
+  exec_t1 = times(NULL);
+  for (int i = 0; i < 1000000; i++){
+    g = e * f;
+  }
+  exec_t2 = times(NULL);
+
+  printf("Float mul result: %f, %d ticks\n", g, exec_t2 - exec_t1);
+
+  exec_t1 = times(NULL);
+  for (int i = 0; i < 1000000; i++){
+    h = ALT_CI_FP_MULT(e, f);
+  }
+  exec_t2 = times(NULL);
+  printf("Float mul res custom: %f, %d ticks\n", h, exec_t2 - exec_t1);
 
   return 0;
 }

@@ -84,6 +84,7 @@ PLLJ_PLLSPE_INFO.txt
 !**/**bsp/settings.bsp
 
 hello_world/first_nios2_system/**
+task6/first_nios2_system/**
 
 
 **/__pycache__

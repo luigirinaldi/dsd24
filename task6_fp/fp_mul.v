@@ -7,8 +7,8 @@
 `timescale 1 ps / 1 ps
 module fp_mul (
 		input  wire        clk,    //    clk.clk
-		input  wire        clk_en,
-		input  wire        reset, // areset.reset
+		input  wire        areset, // areset.reset
+		input  wire [0:0]  en,     //     en.en
 		input  wire [31:0] a,      //      a.a
 		input  wire [31:0] b,      //      b.b
 		output wire [31:0] q       //      q.q
@@ -16,7 +16,8 @@ module fp_mul (
 
 	fp_mul_0002 fp_mul_inst (
 		.clk    (clk),    //    clk.clk
-		.areset (reset), // areset.reset
+		.areset (areset), // areset.reset
+		.en     (en),     //     en.en
 		.a      (a),      //      a.a
 		.b      (b),      //      b.b
 		.q      (q)       //      q.q
@@ -62,12 +63,12 @@ endmodule
 // Retrieval info: 	<generic name="fp_exp" value="8" />
 // Retrieval info: 	<generic name="fp_man" value="23" />
 // Retrieval info: 	<generic name="exponent_width" value="23" />
-// Retrieval info: 	<generic name="frequency_target" value="50" />
+// Retrieval info: 	<generic name="frequency_target" value="200" />
 // Retrieval info: 	<generic name="latency_target" value="2" />
-// Retrieval info: 	<generic name="performance_goal" value="frequency" />
+// Retrieval info: 	<generic name="performance_goal" value="latency" />
 // Retrieval info: 	<generic name="rounding_mode" value="nearest with tie breaking away from zero" />
 // Retrieval info: 	<generic name="faithful_rounding" value="false" />
-// Retrieval info: 	<generic name="gen_enable" value="false" />
+// Retrieval info: 	<generic name="gen_enable" value="true" />
 // Retrieval info: 	<generic name="divide_type" value="0" />
 // Retrieval info: 	<generic name="select_signal_enable" value="false" />
 // Retrieval info: 	<generic name="scale_by_pi" value="false" />
