@@ -57,6 +57,14 @@
          type = "int";
       }
    }
+   element fp_sub
+   {
+      datum _sortIndex
+      {
+         value = "11";
+         type = "int";
+      }
+   }
    element jtag_uart
    {
       datum _sortIndex
@@ -220,7 +228,7 @@
   <parameter name="cpuArchRev" value="1" />
   <parameter name="cpuID" value="0" />
   <parameter name="cpuReset" value="false" />
-  <parameter name="customInstSlavesSystemInfo"><![CDATA[<info><slave name="fp_mult" baseAddress="0" addressSpan="1" clockCycleType="MULTICYCLE" /><slave name="fp_add" baseAddress="1" addressSpan="1" clockCycleType="MULTICYCLE" /></info>]]></parameter>
+  <parameter name="customInstSlavesSystemInfo"><![CDATA[<info><slave name="fp_mult" baseAddress="0" addressSpan="1" clockCycleType="MULTICYCLE" /><slave name="fp_add" baseAddress="1" addressSpan="1" clockCycleType="MULTICYCLE" /><slave name="fp_sub" baseAddress="2" addressSpan="1" clockCycleType="MULTICYCLE" /></info>]]></parameter>
   <parameter name="customInstSlavesSystemInfo_nios_a" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_b" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_c" value="&lt;info/&gt;" />
@@ -387,6 +395,7 @@
  </module>
  <module name="fp_add" kind="fp_add" version="1.0" enabled="1" />
  <module name="fp_mult" kind="fp_mult" version="1.0" enabled="1" />
+ <module name="fp_sub" kind="fp_sub" version="1.0" enabled="1" />
  <module
    name="jtag_uart"
    kind="altera_avalon_jtag_uart"
@@ -824,6 +833,15 @@
   <parameter name="CIName" value="fp_add" />
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="1" />
+ </connection>
+ <connection
+   kind="nios_custom_instruction"
+   version="20.1"
+   start="cpu.custom_instruction_master"
+   end="fp_sub.nios_custom_instruction_slave">
+  <parameter name="CIName" value="fp_sub" />
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="2" />
  </connection>
  <connection kind="reset" version="20.1" start="clk_0.clk_reset" end="cpu.reset" />
  <connection

@@ -319,7 +319,7 @@ The second subtraction is performed on the result of the custom division, theref
 
 ```
      __uint32_t term1_int =  DividePow2(cos_2, 1);
-     term1_int |= 0x80000000;
+     term1_int ^= 0x80000000;
     const float term1 =  *(float*)&term1_int;
 
     const float cosine = 1 + term1  + cos_4 * c_term2;
@@ -429,16 +429,29 @@ Conversely, implementing the taylor series using only the custom instructions ha
 
 `nios2-bsp-update-settings --settings settings.bsp --set hal.custom_newlib_flags='$(ALT_CFLAGS) -mcustom-fmuls=0 -mcustom-fadds=1'`
 
-This adds the custom instruction for floating point adders and floating point multiplication. Observing the produced assembly it is possible to notice that floating point subtraction is still being emulated.
+This adds the custom instruction for floating point adders and floating point multiplication. 
+
+Observing the assembly objdump it is possible to notice that floating point subtraction is still being emulated in the cosine function.
+Further, the updated bsp flags only affect the libraries, therefore any floating point operation performed in the main function is still performed in emulation, and to use the floating point hardware the custom instructions have to be called manually.
+
+Adding the following pragma commands allows the compiler to compile floating point multiplications and additions using the custom floating point hardware. 
+
+```
+#pragma GCC target("custom-fmuls=0")
+#pragma GCC target("custom-fadds=1")
+```
+
+### Adding custom subtraction
 
 
-| Test Number | Baseline | Fp add | Taylor Series (3 term) | Taylor Series (6 terms) | compiled custom inst |
-| ----------- | -------- | ------ | ---------------------- | ----------------------- | -------------------- |
-| 1           | 10.6     | 9.7    | 0.19                   | 0.27                    | 2.131                |
-| 2           | 421      | 384    | 8.1                    | 11.1                    | 84.2                 |
-| 3           | 53934    | 48247  | 928                    | 1424                    | 10628                |
+
+| Test Number | Baseline | Fp add | Taylor Series (3 term) | Taylor Series (6 terms) | compiled math lib custom inst | whole program compiled custom inst |
+| ----------- | -------- | ------ | ---------------------- | ----------------------- | ----------------------------- | ---------------------------------- |
+| 1           | 10.6     | 9.7    | 0.19                   | 0.27                    | 2.131                         | 2                                  |
+| 2           | 421      | 384    | 8.1                    | 11.1                    | 84.2                          | 78.5                               |
+| 3           | 53934    | 48247  | 928                    | 1424                    | 10628                         | 10422                              |
 | MB          | 47360    | 47360  |
 | EM          | 1        | 1      |
 | LE          | 1695     | 2020   |
 | Utilisation | 0.025    | 0.028  |
-| Size        | 86392    | 86392  | 77920                  | 77860                   | 85660                |
+| Size        | 86392    | 86392  | 77920                  | 77860                   | 85660                         | 83356                              |

@@ -8,13 +8,18 @@
 // #include <unistd.h>
 #include <math.h>
 
+#pragma GCC target("custom-fmuls=0")
+#pragma GCC target("custom-fadds=1")
+
+
+
 #define DividePow2(val, pow) (*(int*)&val != 0 ? ((*(int*)&val & 0x807fffff) | ((((*(int*)&val >> 23) & 0xff) - pow) << 23) ) : 0)
 
-#define FP_MUL(A,B) __builtin_custom_fnff(ALT_CI_FP_MULT_N,(A),(B))
-#define ALT_CI_FP_MULT_N 0x0
+// #define FP_MUL(A,B) __builtin_custom_fnff(ALT_CI_FP_MULT_N,(A),(B))
+// #define ALT_CI_FP_MULT_N 0x0
 
-#define FP_ADD(A,B) __builtin_custom_fnff(ALT_CI_FP_ADD_N,(A),(B))
-#define ALT_CI_FP_ADD_N 0x1
+// #define FP_ADD(A,B) __builtin_custom_fnff(ALT_CI_FP_ADD_N,(A),(B))
+// #define ALT_CI_FP_ADD_N 0x1
 
 // Test case 1
 // #define step 5
@@ -91,27 +96,31 @@ float theFunction(float x[0], int M) {
   int i = 0;
   for (; i < M; i++) 
   {
-    const float cos_term = FP_MUL(FP_ADD(x[i], -128.0f), coeff2);
-    const float cos_2 = FP_MUL(cos_term, cos_term);
-    const float cos_4 = FP_MUL(cos_2, cos_2);
-    const float cos_6 = FP_MUL(cos_4, cos_2);
-    // const float cos_8 = FP_MUL(cos_4, cos_4);
-    // const float cos_10 = FP_MUL(cos_8, cos_2);
-    // const float cos_12 = FP_MUL(cos_6, cos_6);
+    // const float cos_term = FP_MUL(FP_ADD(x[i], -128.0f), coeff2);
+    // const float cos_2 = FP_MUL(cos_term, cos_term);
+    // const float cos_4 = FP_MUL(cos_2, cos_2);
+    // const float cos_6 = FP_MUL(cos_4, cos_2);
+    // // const float cos_8 = FP_MUL(cos_4, cos_4);
+    // // const float cos_10 = FP_MUL(cos_8, cos_2);
+    // // const float cos_12 = FP_MUL(cos_6, cos_6);
 
-    const float cosine = cosf(cos_term);
+    // const float cosine = 
+    // //cosf(cos_term);
     // // FP_ADD(
     //   FP_ADD(
-    //     // FP_ADD(FP_MUL(cos_2, c_term1),
+    //     // FP_ADD(FP_MUL(cos_6, c_term3),
     //     1
     //     // )
-    //     ,FP_ADD(FP_MUL(cos_4, c_term2), FP_MUL(cos_6, c_term3)))
+    //     ,FP_ADD(FP_MUL(cos_4, c_term2), FP_MUL(cos_2, c_term1)))
     //     // , FP_ADD(FP_MUL(cos_8, c_term4), FP_MUL(cos_10, c_term5)))
     //     ;
 
 
 
-    sum = FP_ADD(sum, FP_ADD(FP_MUL(coeff1,x[i]), FP_MUL(FP_MUL(x[i],x[i]),cosine)));
+    // sum = FP_ADD(sum, FP_ADD(FP_MUL(coeff1,x[i]), FP_MUL(FP_MUL(x[i],x[i]),cosine)));
+
+
+    sum += (coeff1 * x[i] + x[i] * x[i] * cosf((x[i] + -128.0f) * coeff2));
   }
 
   return sum;
@@ -121,7 +130,7 @@ int main(int argc, char* argv[])
 {
   const int numIterations = NUM_CASES;
   printf("Task 3!\n");
-  printf("Ticks per second: %ld\n", alt_ticks_per_second());
+  // printf("Ticks per second: %ld\n", alt_ticks_per_second());
   printf("Running %d tests\n", numIterations);
 
   // Define input vector
