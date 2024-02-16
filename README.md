@@ -425,7 +425,7 @@ Removing the `cosf` functions leads to substantial performance improvements. Thi
 
 Conversely, implementing the taylor series using only the custom instructions has a memory footprint of `292` bytes. 
 
-### Compiling with custom instructions
+### Compiling with custom instructions (add and mult)
 
 `nios2-bsp-update-settings --settings settings.bsp --set hal.custom_newlib_flags='$(ALT_CFLAGS) -mcustom-fmuls=0 -mcustom-fadds=1'`
 
