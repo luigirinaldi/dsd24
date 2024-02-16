@@ -1,11 +1,11 @@
-#include <stdlib.h>
-#include <sys/alt_stdio.h>
+// #include <stdlib.h>
+// #include <sys/alt_stdio.h>
 #include <sys/alt_alarm.h>
 #include <sys/times.h>
-#include <alt_types.h>
+// #include <alt_types.h>
 #include <system.h>
-#include <stdio.h>
-#include <unistd.h>
+// #include <stdio.h>
+// #include <unistd.h>
 #include <math.h>
 
 #define DividePow2(val, pow) (*(int*)&val != 0 ? ((*(int*)&val & 0x807fffff) | ((((*(int*)&val >> 23) & 0xff) - pow) << 23) ) : 0)
@@ -17,9 +17,9 @@
 #define ALT_CI_FP_ADD_N 0x1
 
 // Test case 1
-// #define step 5
-// #define N 52
-// #define NUM_CASES 100
+#define step 5
+#define N 52
+#define NUM_CASES 100
 
 // Test case 2
 // #define step 1/8.0
@@ -28,9 +28,9 @@
 
 
 // Test case 3
-#define step 1/1024.0
-#define N 261121
-#define NUM_CASES 1
+// #define step 1/1024.0
+// #define N 261121
+// #define NUM_CASES 1
 
 
 // Test case 4
@@ -87,7 +87,8 @@ float theFunction(float x[0], int M) {
   int i = 0;
   for (; i < M; i++) 
   {
-    sum += (FP_MUL(0.5f,x[i]) + FP_MUL(FP_MUL(x[i],x[i]),cosf((x[i] - 128 )/ 128)));
+    const float cos_term = FP_MUL(FP_ADD(x[i], -128.0f), 1/128.0f);
+    sum = FP_ADD(sum, FP_ADD(FP_MUL(0.5f,x[i]), FP_MUL(FP_MUL(x[i],x[i]),cosf(cos_term))));
   }
 
   return sum;
