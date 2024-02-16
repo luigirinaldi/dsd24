@@ -465,6 +465,8 @@ Timing Loop:
 
 Recompile the entire library and the main program using -Ofast, marginal performance increase. 
 
+Running the Taylor series implementation with the custom instructions compiled with the fastest flags leads to significant improvement, and the call stack size is reduced to 96 bytes.
+This means the instruction cache size could be reduced further.
 
 
 
