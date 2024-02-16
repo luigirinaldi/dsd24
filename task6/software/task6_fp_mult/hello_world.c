@@ -6,7 +6,7 @@
 #include <system.h>
 #include <stdio.h>
 // #include <unistd.h>
-// #include <math.h>
+#include <math.h>
 
 #define DividePow2(val, pow) (*(int*)&val != 0 ? ((*(int*)&val & 0x807fffff) | ((((*(int*)&val >> 23) & 0xff) - pow) << 23) ) : 0)
 
@@ -22,15 +22,15 @@
 // #define NUM_CASES 1000
 
 // Test case 2
-#define step 1/8.0
-#define N 2041
-#define NUM_CASES 10
+// #define step 1/8.0
+// #define N 2041
+// #define NUM_CASES 10
 
 
 // Test case 3
-// #define step 1/1024.0
-// #define N 261121
-// #define NUM_CASES 1
+#define step 1/1024.0
+#define N 261121
+#define NUM_CASES 1
 
 
 // Test case 4
@@ -99,15 +99,15 @@ float theFunction(float x[0], int M) {
     // const float cos_10 = FP_MUL(cos_8, cos_2);
     // const float cos_12 = FP_MUL(cos_6, cos_6);
 
-    const float cosine = 
-    // FP_ADD(
-      FP_ADD(
-        // FP_ADD(FP_MUL(cos_2, c_term1),
-        1
-        // )
-        ,FP_ADD(FP_MUL(cos_4, c_term2), FP_MUL(cos_6, c_term3)))
-        // , FP_ADD(FP_MUL(cos_8, c_term4), FP_MUL(cos_10, c_term5)))
-        ;
+    const float cosine = cosf(cos_term);
+    // // FP_ADD(
+    //   FP_ADD(
+    //     // FP_ADD(FP_MUL(cos_2, c_term1),
+    //     1
+    //     // )
+    //     ,FP_ADD(FP_MUL(cos_4, c_term2), FP_MUL(cos_6, c_term3)))
+    //     // , FP_ADD(FP_MUL(cos_8, c_term4), FP_MUL(cos_10, c_term5)))
+    //     ;
 
 
 

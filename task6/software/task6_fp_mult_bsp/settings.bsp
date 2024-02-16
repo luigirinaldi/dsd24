@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>16-Feb-2024 00:47:40</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1708044460696</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>16-Feb-2024 02:21:43</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1708050103801</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>./</BspGeneratedLocation>
         <BspSettingsFile>../task6_fp_mult_bsp/settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../first_nios2_system.sopcinfo</SopcDesignFile>
@@ -854,7 +854,7 @@
                 <SettingName>hal.custom_newlib_flags</SettingName>
                 <Identifier>CUSTOM_NEWLIB_FLAGS</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>none</Value>
+                <Value>$(ALT_CFLAGS) -mcustom-fmuls=0 -mcustom-fadds=1</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>public_mk_define</DestinationFile>
                 <Description>Build a custom version of newlib with the specified space-separated compiler flags.</Description>

@@ -421,13 +421,24 @@ Introducing floating point adder to handle floating point additions.
 
 ### Performing Taylor series 
 
-| Test Number | Baseline | Fp add | Taylor Series (3 term) | Taylor Series (6 terms) |
-| ----------- | -------- | ------ | ---------------------- |
-| 1           | 10.6     | 9.7    | 0.19                   | 0.27                    |
-| 2           | 421      | 384    | 8.1                    | 11.1                    |
-| 3           | 53934    | 48247  | 928                    | 1424                    |
+Removing the `cosf` functions leads to substantial performance improvements. This is mainly due to the fact that the library is still using the floating point emulation which has two main disadvantages: it takes many cycles to perform the floating point instruction and consequently the instructions take up a lot of space in the Instruction cache causing evictions and cache misses.
+
+Conversely, implementing the taylor series using only the custom instructions has a memory footprint of `292` bytes. 
+
+### Compiling with custom instructions
+
+`nios2-bsp-update-settings --settings settings.bsp --set hal.custom_newlib_flags='$(ALT_CFLAGS) -mcustom-fmuls=0 -mcustom-fadds=1'`
+
+This adds the custom instruction for floating point adders and floating point multiplication. Observing the produced assembly it is possible to notice that floating point subtraction is still being emulated.
+
+
+| Test Number | Baseline | Fp add | Taylor Series (3 term) | Taylor Series (6 terms) | compiled custom inst |
+| ----------- | -------- | ------ | ---------------------- | ----------------------- | -------------------- |
+| 1           | 10.6     | 9.7    | 0.19                   | 0.27                    | 2.131                |
+| 2           | 421      | 384    | 8.1                    | 11.1                    | 84.2                 |
+| 3           | 53934    | 48247  | 928                    | 1424                    | 10628                |
 | MB          | 47360    | 47360  |
 | EM          | 1        | 1      |
 | LE          | 1695     | 2020   |
 | Utilisation | 0.025    | 0.028  |
-| Size        | 86392    | 86392  | 77920                  | 77860                   |
+| Size        | 86392    | 86392  | 77920                  | 77860                   | 85660                |
