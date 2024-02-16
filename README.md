@@ -405,3 +405,23 @@ When restricting the output width, it is important to note the manual's remarks 
 This would give 0 unless the mulitplication result is large.
 
 ![screenshot of manual](rsc/mult_man.png)
+
+### Baseline configuration with one floating point multiplier
+
+Baseline using only fp multipliers the `cosf` function and 2kB of I and D cache. 
+
+`sum += (FP_MUL(0.5f,x[i]) + FP_MUL(FP_MUL(x[i],x[i]),cosf((x[i] - 128 )/ 128)));`
+
+### Floating point add 
+
+Introducing floating point adder to handle floating point additions.
+
+| Test Number | Baseline | Fp add
+| ----------- | -------- |----
+| 1           | 11.7     |
+| 2           | 504      |
+| 3           | 61621    |
+| MB          | 47360    |47360
+| EM          | 1        |1
+| LE          | 1695     |2020
+| Utilisation | 0.025    |0.028
