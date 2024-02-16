@@ -410,18 +410,24 @@ This would give 0 unless the mulitplication result is large.
 
 Baseline using only fp multipliers the `cosf` function and 2kB of I and D cache. 
 
-`sum += (FP_MUL(0.5f,x[i]) + FP_MUL(FP_MUL(x[i],x[i]),cosf((x[i] - 128 )/ 128)));`
+```
+    const float cos_term = FP_MUL((x[i] - 128 ), 1/128.0f);
+    sum += (FP_MUL(0.5f,x[i]) + FP_MUL(FP_MUL(x[i],x[i]),cosf(cos_term)));
+```
 
 ### Floating point add 
 
 Introducing floating point adder to handle floating point additions.
 
-| Test Number | Baseline | Fp add
-| ----------- | -------- |----
-| 1           | 11.7     |
-| 2           | 504      |
-| 3           | 61621    |
-| MB          | 47360    |47360
-| EM          | 1        |1
-| LE          | 1695     |2020
-| Utilisation | 0.025    |0.028
+### Performing Taylor series 
+
+| Test Number | Baseline | Fp add | Taylor Series (3 term) | Taylor Series (6 terms) |
+| ----------- | -------- | ------ | ---------------------- |
+| 1           | 10.6     | 9.7    | 0.19                   | 0.27                    |
+| 2           | 421      | 384    | 8.1                    | 11.1                    |
+| 3           | 53934    | 48247  | 928                    | 1424                    |
+| MB          | 47360    | 47360  |
+| EM          | 1        | 1      |
+| LE          | 1695     | 2020   |
+| Utilisation | 0.025    | 0.028  |
+| Size        | 86392    | 86392  | 77920                  | 77860                   |
