@@ -443,15 +443,39 @@ Adding the following pragma commands allows the compiler to compile floating poi
 
 ### Adding custom subtraction
 
+The floating point subtractor is added from the floating point functions library, with a latency of 2 cycles for 50MHz. Adjusting the compiler flags to include the floating point subtractions the performance increases ten fold. This is due to the fact that the subtraction is no longer being emulated in an 1000 instruction function call, meaning the operation is performed in 2 cycles instead of at least 1000 and to the fact that the entire program can now fit inside of the instruction cache. 
+
+The call stack depth for the function is now 2552 bytes; while this is more than the 2kB cache being used, it means most of the body of the loop can be stored in the instruction cache to avoid DRAM memory accesses.
+
+```
+Timing Loop:
+  Sum + cosine function : 244 bytes
+    |
+    |-> call `<__cosf>` : 148 bytes
+      |-> call `<__kernel_cos>` : 384 bytes
+      |-> call `<__kernel_sin>` : 244 bytes
+      |-> call `<__ieee754_rem_pio>` : 80 bytes
+        |-> call `<__floatsisf>` 288 bytes
+        |-> call `<__fixfsi>` 288 bytes
+        |-> call `<__eqsf2>` 108 bytes
+
+```
+
+### Recompiling everything with -Ofast
+
+Recompile the entire library and the main program using -Ofast, marginal performance increase. 
 
 
-| Test Number | Baseline | Fp add | Taylor Series (3 term) | Taylor Series (6 terms) | compiled math lib custom inst | whole program compiled custom inst |
-| ----------- | -------- | ------ | ---------------------- | ----------------------- | ----------------------------- | ---------------------------------- |
-| 1           | 10.6     | 9.7    | 0.19                   | 0.27                    | 2.131                         | 2                                  |
-| 2           | 421      | 384    | 8.1                    | 11.1                    | 84.2                          | 78.5                               |
-| 3           | 53934    | 48247  | 928                    | 1424                    | 10628                         | 10422                              |
-| MB          | 47360    | 47360  |
-| EM          | 1        | 1      |
-| LE          | 1695     | 2020   |
-| Utilisation | 0.025    | 0.028  |
-| Size        | 86392    | 86392  | 77920                  | 77860                   | 85660                         | 83356                              |
+
+
+
+| Test Number | Baseline | Fp add | Taylor Series (3 term) | Taylor Series (6 terms) | compiled lib cust | whole program compiled cust | custom fp add, sub, mul | -Ofast | Taylor 3 term |
+| ----------- | -------- | ------ | ---------------------- | ----------------------- | ----------------- | --------------------------- | ----------------------- | ------ | ------------- |
+| 1           | 10.6     | 9.7    | 0.19                   | 0.27                    | 2.131             | 2                           | 0.29                    | 0.268  | 0.073         |
+| 2           | 421      | 384    | 8.1                    | 11.1                    | 84.2              | 78.5                        | 11.6                    | 10.5   | 3.1           |
+| 3           | 53934    | 48247  | 928                    | 1424                    | 10628             | 10422                       | 1431                    | 1307   | 389           |
+| MB          | 47360    | 47360  |                        |                         |                   |                             | 47360                   |
+| EM          | 1        | 1      |                        |                         |                   |                             | 1                       |
+| LE          | 1695     | 2020   |                        |                         |                   |                             | 2145                    |
+| Utilisation | 0.0196   | 0.0235 |                        |                         |                   |                             | 0.0243                  |
+| Size        | 86392    | 86392  | 77920                  | 77860                   | 85660             | 83356                       | 81520                   | 86640  | 80204         |

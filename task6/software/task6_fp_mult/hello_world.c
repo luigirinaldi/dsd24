@@ -10,6 +10,8 @@
 
 #pragma GCC target("custom-fmuls=0")
 #pragma GCC target("custom-fadds=1")
+#pragma GCC target("custom-fsubs=2")
+
 
 
 
@@ -29,13 +31,13 @@
 // Test case 2
 // #define step 1/8.0
 // #define N 2041
-// #define NUM_CASES 10
+// #define NUM_CASES 100
 
 
 // Test case 3
 #define step 1/1024.0
 #define N 261121
-#define NUM_CASES 1
+#define NUM_CASES 10
 
 
 // Test case 4
@@ -115,12 +117,20 @@ float theFunction(float x[0], int M) {
     //     // , FP_ADD(FP_MUL(cos_8, c_term4), FP_MUL(cos_10, c_term5)))
     //     ;
 
+    const float cos_term = (x[i] - 128.0f) * coeff2;
+    const float cos_2 = cos_term * cos_term;
+    const float cos_4 = cos_2 * cos_2;
+
+    const float cosine = 1 + cos_2 * c_term1 + cos_4 * c_term2;
+    sum += x[i] * coeff1 + x[i] * x[i] * cosine;
+
 
 
     // sum = FP_ADD(sum, FP_ADD(FP_MUL(coeff1,x[i]), FP_MUL(FP_MUL(x[i],x[i]),cosine)));
 
 
-    sum += (coeff1 * x[i] + x[i] * x[i] * cosf((x[i] + -128.0f) * coeff2));
+
+    // sum += (coeff1 * x[i] + x[i] * x[i] * cosf((x[i] - 128.0f) * coeff2));
   }
 
   return sum;
