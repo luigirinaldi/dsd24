@@ -40,7 +40,7 @@ def mean_error_cos (c_iter, num_samples = 1000):
     sample_mean = np.average(error)
     sample_std = np.average(np.square(error - sample_mean))
     
-    conf95 = (sample_mean - 1.96*sample_std / math.sqrt(num_samples), sample_mean + 1.96*sample_std / math.sqrt(num_samples))
+    conf95 = (sample_mean - 1.96*math.sqrt(sample_std / num_samples), sample_mean + 1.96*math.sqrt(sample_std / num_samples))
     abs_bound = (np.min(error), np.max(error))
     
     return sample_mean, sample_std, conf95, abs_bound
@@ -53,15 +53,21 @@ def thread_func(iter_num, sample_num, filename):
         f.write(f'{iter_num},{mean}, {std}, {c95l},{c95h}, {al},{ah}\n')
 
 def main():
-    data_save = 'data/cordic_mean_err_10e5_samples.csv'
     
-    iter_range = range(1,40)
-    num_samples = int(10e5)
+    iter_range = range(10,30)
+    num_samples = int(1e5)
+    data_save = f'data/cordic_mean_err_{num_samples:.0e}_samples.csv'
     
     threads = [threading.Thread(target=thread_func,args=(i,num_samples,data_save)) for i in iter_range]
     
     with open(data_save,'a+') as f:
         f.write('num_iters,mean,std,c95l,c95h,al,ah\n')
+    
+    # for t in threads:
+    #     t.start()
+        
+    # for t in threads:
+    #     t.join()
     
     for iter_val in iter_range:
         mean, std, (c95l,c95h), (al,ah) = mean_error_cos(iter_val,num_samples)
