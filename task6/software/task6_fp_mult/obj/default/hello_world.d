@@ -32,8 +32,7 @@ obj/default/hello_world.o: hello_world.c \
  ../task6_fp_mult_bsp//newlib/nios2-elf/include/sys/sched.h \
  ../task6_fp_mult_bsp//newlib/nios2-elf/include/machine/types.h \
  ../task6_fp_mult_bsp//newlib/nios2-elf/include/sys/stdio.h \
- ../task6_fp_mult_bsp//newlib/nios2-elf/include/math.h \
- ../task6_fp_mult_bsp//newlib/nios2-elf/include/machine/fastmath.h
+ ../task6_fp_mult_bsp//newlib/nios2-elf/include/math.h
 ../task6_fp_mult_bsp//HAL/inc/sys/alt_alarm.h:
 ../task6_fp_mult_bsp//HAL/inc/sys/alt_llist.h:
 ../task6_fp_mult_bsp//HAL/inc/alt_types.h:
@@ -69,4 +68,3 @@ obj/default/hello_world.o: hello_world.c \
 ../task6_fp_mult_bsp//newlib/nios2-elf/include/machine/types.h:
 ../task6_fp_mult_bsp//newlib/nios2-elf/include/sys/stdio.h:
 ../task6_fp_mult_bsp//newlib/nios2-elf/include/math.h:
-../task6_fp_mult_bsp//newlib/nios2-elf/include/machine/fastmath.h:

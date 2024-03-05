@@ -37,7 +37,7 @@
 // Test case 3
 #define step 1/1024.0
 #define N 261121
-#define NUM_CASES 10
+#define NUM_CASES 1
 
 
 // Test case 4
@@ -87,11 +87,11 @@ float sumVector(float x[0], int M)
 // constant coefficient division
 const float coeff1 = 0.5, coeff2 = 1 / 128.0f, coeff3 = 128.0f;
 // taylor series terms 
-const float c_term1 = -1/2.0, 
-      c_term2 = 1 / 24.0f, 
-      c_term3 = - 1 / 720.0f,
-      c_term4 = 1 / 40320.0f,
-      c_term5 = - 1 / 3628800.0f;
+#define c_term1 -1/2.0f
+#define c_term2 1 / 24.0f
+#define c_term3 - 1 / 720.0f
+#define c_term4 1 / 40320.0f
+#define c_term5 - 1 / 3628800.0f
 
 float theFunction(float x[0], int M) {
   float sum = 0;
@@ -117,11 +117,14 @@ float theFunction(float x[0], int M) {
     //     // , FP_ADD(FP_MUL(cos_8, c_term4), FP_MUL(cos_10, c_term5)))
     //     ;
 
-    const float cos_term = (x[i] - 128.0f) * coeff2;
-    const float cos_2 = cos_term * cos_term;
-    const float cos_4 = cos_2 * cos_2;
+     float cos_term = (x[i] - 128.0f) * coeff2;
+     float cos_2 = cos_term * cos_term;
+     float cos_4 = cos_2 * cos_2;
+     float cos_6 = cos_4 * cos_2;
+    // const float cos_8 = cos_4 * cos_4;
 
-    const float cosine = 1 + cos_2 * c_term1 + cos_4 * c_term2;
+
+    const float cosine = 1 + cos_2 * c_term1 + cos_4 * c_term2 + cos_6 * c_term3;
     sum += x[i] * coeff1 + x[i] * x[i] * cosine;
 
 
