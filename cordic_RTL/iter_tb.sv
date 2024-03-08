@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-`include "cordic_iter.v"
 
 module iter_tb();
     localparam F = 30;

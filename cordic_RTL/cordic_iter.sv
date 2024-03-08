@@ -1,7 +1,7 @@
 module cordic_iter #(  
-    parameter FRAC_BITS = 20,
-    parameter ITERATION = 0,
-    parameter ANGLE = 0
+    parameter FRAC_BITS = 'd20,
+    parameter ITERATION = 'd0,
+    parameter ANGLE = 22'hc90fd
 )
 
 (
@@ -12,6 +12,10 @@ module cordic_iter #(
     output  reg signed     [FRAC_BITS+1:0] y_out,
     output  reg signed     [FRAC_BITS+1:0] z_out
 );
+
+initial begin
+   $display("f:%d i:%d a:%x", FRAC_BITS,ITERATION,ANGLE);
+end
 
 always @(*)
 begin
