@@ -20,6 +20,7 @@ reg signed [FRAC_BITS+1:0] inter_z [NUM_ITER-1:0];
 //     end
 // endgenerate
 
+//typedef reg [FRAC_BITS+1:0] angles_type [NUM_ITER:0];
 //
 //function automatic angles_type gen_angles(input n_iter, input f_bits);
 ////	reg signed [FRAC_BITS+1:0] angles [NUM_ITER+1];
@@ -37,16 +38,9 @@ reg signed [FRAC_BITS+1:0] inter_z [NUM_ITER-1:0];
 //    get_angle = $rtoi($atan(2.0**(-iter))*(2.0**FRAC_BITS));    
 //endfunction
 
-typedef reg [FRAC_BITS+1:0] angles_type [NUM_ITER];
+reg signed [FRAC_BITS+1:0]  ANGLES [0:NUM_ITER-1] ='{22'hc90fd, 22'h76b19, 22'h3eb6e, 22'h1fd5b, 22'hffaa, 22'h7ff5, 22'h3ffe, 22'h1fff, 22'hfff, 22'h7ff};
 
-parameter [(NUM_ITER*FRAC_BITS)-1:0] ANGLES = 22'hc90fd;
-
-localparam ANGLE_SUM = 22'h9b74f;
-
-// initial
-// begin
-//     $display("%0h", ANGLES);
-// end
+localparam signed ANGLE_SUM = 22'h9b74f;
 
 genvar i;
 generate 
@@ -54,9 +48,9 @@ generate
         // localparam angle = $rtoi($atan(2.0**(-i))*(2.0**FRAC_BITS));
         cordic_iter #(
             .FRAC_BITS(FRAC_BITS),
-            .ITERATION(i),
-            .ANGLE(ANGLES[i])
+            .ITERATION(i)
         ) u0 (
+            .angle(ANGLES[i]),
             .x_in(inter_x[i-1]),
             .x_out(inter_x[i]),
             .y_in(inter_y[i-1]),
@@ -73,9 +67,10 @@ wire signed [FRAC_BITS+1:0] start_y = 'b0;
 
 cordic_iter #(
     .FRAC_BITS(FRAC_BITS),
-    .ITERATION(0),
-    .ANGLE(ANGLES[21:0]))
-ustart (
+    .ITERATION(0))
+    // .ANGLE(ANGLES[0]))
+    ustart (
+    .angle(ANGLES[0]),
     .x_in(start_x),
     .x_out(inter_x[0]),
     .y_in(start_y),
