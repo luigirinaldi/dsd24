@@ -1,9 +1,9 @@
 `timescale 1ns / 1ps
 
 module cos_tb();
-    localparam F = 20;
+    localparam F = 30;
     localparam SF = 2.0 ** (-F);
-    localparam ITER = 10;
+    localparam ITER = 30;
 
     function [ITER:0][F+1:0] gen_angles;
     //	reg signed [FRAC_BITS+1:0] angles [NUM_ITER+1];
@@ -20,8 +20,12 @@ module cos_tb();
     wire signed [F+1:0] cos_out;
 
     localparam angle_in = 3.14/4.0;
+    // localparam angle_in = 3.14/2.0;
 
-    cordic_cos cos (
+    cordic_cos #(
+        .FRAC_BITS(F),
+        .NUM_ITER(ITER)
+        ) cos (
         theta_in,
         cos_out
     );
@@ -33,6 +37,7 @@ module cos_tb();
 
         
         $display("%x, %x", theta_in, cos_out);
+        $display("%b, %b", $rtoi($cos(angle_in)/SF), cos_out);
         $display("%f, %f, %f", $cos(angle_in), $itor(cos_out)*SF, ($cos(angle_in)-$itor(cos_out)*SF)/$cos(angle_in));
     end
 

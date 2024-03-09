@@ -6,7 +6,7 @@ TB_COS=cos_tb.sv
 IVERILOG_FLAGS=-g2012
 
 $(OUT)/$(OUT_COS): $(wildcard *.sv) $(OUT)/
-	python gen_cordic_vals.py ./cordic_cos.sv
+	python gen_cordic_vals.py ./cordic_cos.sv  $(TB_COS)
 	iverilog $(IVERILOG_FLAGS) -o $(OUT)/$(OUT_COS) $(TB_COS) ./cordic_cos.sv ./cordic_iter.sv
 
 $(OUT)/$(OUT_ITER): $(wildcard *.sv) $(OUT)/

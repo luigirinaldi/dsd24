@@ -3,7 +3,7 @@ import math
 import sys
 
 def get_angles(iter_n):
-    angles = [math.atan(2.0**(-i)) for i in range(iter_n)]
+    angles = [math.atan(math.pow(2.0,-i)) for i in range(iter_n)]
     final_coeff = math.prod([1/math.sqrt(1+ math.pow(2,-2*i)) for i in range(iter_n)])
     return angles, final_coeff
 
@@ -13,23 +13,22 @@ def convert_to_hex(num, prec):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("file")
+    parser.add_argument("cos_file")
+    parser.add_argument("tb_file")
     args = parser.parse_args()
     
     FRAC_PREC = None
     NUM_ITER = None
-    iter_string = 'NUM_ITER = '
-    frac_string = 'FRAC_BITS = '
-    file_copy = None
+    iter_string = 'localparam ITER ='
+    frac_string = 'localparam F ='
     
-    with open(args.file,'r') as fp:
-        file_copy = fp.readlines()
-        for l_no, line in enumerate(file_copy):
+    with open(args.tb_file,'r') as fp:
+        for l_no, line in enumerate(fp):
             if iter_string in line:
-                n_iter_str = line[line.find(iter_string) + len(iter_string):line.find(',')]
+                n_iter_str = line[line.find(iter_string) + len(iter_string):line.find(';')]
                 NUM_ITER = int(n_iter_str)
             elif frac_string in line:
-                frac_str = line[line.find(frac_string)+ len(frac_string):line.find(',')]
+                frac_str = line[line.find(frac_string)+ len(frac_string):line.find(';')]
                 FRAC_PREC = int(frac_str)
     
     if NUM_ITER is None or FRAC_PREC is None:
@@ -38,6 +37,7 @@ if __name__ == "__main__":
     else :
         print(NUM_ITER,FRAC_PREC)
         angles, coeff = get_angles(NUM_ITER)
+        print(angles, coeff)        
         coeff = convert_to_hex(coeff,FRAC_PREC)
         angles = '{' + ', '.join([convert_to_hex(a,FRAC_PREC) for a in angles]) + '}'
         print(angles, coeff)
@@ -45,7 +45,11 @@ if __name__ == "__main__":
         angles_str = 'ANGLES [0:NUM_ITER-1] ='
         angle_sum_str = 'ANGLE_SUM ='
         
-        with open(args.file,'w') as fp:
+        file_copy = None
+        with open(args.cos_file,'r') as fp:
+            file_copy = fp.readlines()
+        
+        with open(args.cos_file,'w') as fp:
             
             for l_no, line in enumerate(file_copy):
                 if angles_str in line:
